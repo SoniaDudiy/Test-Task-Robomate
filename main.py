@@ -5,14 +5,20 @@ def parse_work_ua_resumes(soup):
     resumes = []
     job_links = soup.find_all('div', class_='job-link')
     for job_link in job_links:
-        title = job_link.find('a').text.strip() if job_link.find('a') else "Unknown"
-        company_div = job_link.find('div', class_='add-top-sm')
-        company = company_div.find('span').text.strip() if company_div and company_div.find('span') else "Unknown"
-        description = job_link.find('p', class_='overflow').text.strip() if job_link.find('p', class_='overflow') else "Unknown"
+        title = job_link.find('h2').find('a').text.strip() if job_link.find('h2') and job_link.find('a') else "Unknown"
+        company = job_link.find('div', class_='add-top-xs').find('span').text.strip() if job_link.find('div', class_='add-top-xs') and job_link.find('span') else "Unknown"
+        description = job_link.find('p').text.strip() if job_link.find('p') else "Unknown"
+        
+        # location and salary may need a separate request to get the details if not available in the main page
+        location = "Unknown"
+        salary = "Unknown"
+        
         resumes.append({
             'title': title,
             'company': company,
-            'description': description
+            'description': description,
+            'location': location,
+            'salary': salary
         })
     return resumes
 
@@ -23,10 +29,15 @@ def parse_robota_ua_resumes(soup):
         title = job_link.find('a', class_='ga_listing').text.strip() if job_link.find('a', class_='ga_listing') else "Unknown"
         company = job_link.find('div', class_='job-list-company-title').text.strip() if job_link.find('div', class_='job-list-company-title') else "Unknown"
         description = job_link.find('div', class_='job-list-item-preview').text.strip() if job_link.find('div', class_='job-list-item-preview') else "Unknown"
+        location = job_link.find('li', {'data-mobile': 'job-item-location'}).text.strip() if job_link.find('li', {'data-mobile': 'job-item-location'}) else "Unknown"
+        salary = job_link.find('span', class_='salary').text.strip() if job_link.find('span', class_='salary') else "Unknown"
+        
         resumes.append({
             'title': title,
             'company': company,
-            'description': description
+            'description': description,
+            'location': location,
+            'salary': salary
         })
     return resumes
 
