@@ -44,7 +44,7 @@ def parse_robota_ua_resumes(soup):
         title = job_link.find('a', class_='ga_listing').text.strip() if job_link.find('a', class_='ga_listing') else "Unknown"
         company = job_link.find('div', class_='job-list-company-title').text.strip() if job_link.find('div', class_='job-list-company-title') else "Unknown"
         description = job_link.find('div', class_='job-list-item-preview').text.strip() if job_link.find('div', class_='job-list-item-preview') else "Unknown"
-        location = job_link.find('li', {'data-mobile': 'job-item-location'}).text.strip() if job_link.find('li', {'data-mobile': 'job-item-location'}) else "Unknown"
+        location = job_link.find('span', class_='ng-star-inserted').text.strip() if job_link.find('span', class_='ng-star-inserted') else "Unknown"
         salary = job_link.find('span', class_='salary').text.strip() if job_link.find('span', class_='salary') else "Unknown"
         
         resumes.append({
@@ -93,4 +93,4 @@ def fetch_resumes(job_position, years_of_experience, skills, location, salary_ex
         print(resume)
 
 # Приклад виклику функції
-fetch_resumes("Data Scientist", "1-3", "Python, Machine Learning", "Kyiv", "50000")
+fetch_resumes("Python developer", "1-3", "Python, Machine Learning", "Kyiv", "30000")
