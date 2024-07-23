@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 def parse_work_ua_resumes(soup):
     resumes = []
-    job_links = soup.find_all('div', class_='job-link')  # Припускаю, що "job-link" є класом для блоку роботи
+    job_links = soup.find_all('div', class_='job-link')  
     
     for job_link in job_links:
         # Отримуємо назву вакансії
