@@ -3,15 +3,28 @@ from bs4 import BeautifulSoup
 
 def parse_work_ua_resumes(soup):
     resumes = []
-    job_links = soup.find_all('div', class_='job-link')
+    job_links = soup.find_all('div', class_='job-link')  # Припускаю, що "job-link" є класом для блоку роботи
+    
     for job_link in job_links:
-        title = job_link.find('h2').find('a').text.strip() if job_link.find('h2') and job_link.find('a') else "Unknown"
-        company = job_link.find('div', class_='add-top-xs').find('span').text.strip() if job_link.find('div', class_='add-top-xs') and job_link.find('span') else "Unknown"
-        description = job_link.find('p').text.strip() if job_link.find('p') else "Unknown"
+        # Отримуємо назву вакансії
+        title_elem = job_link.find('h2').find('a')
+        title = title_elem.text.strip() if title_elem else "Unknown"
         
-        # location and salary may need a separate request to get the details if not available in the main page
-        location = "Unknown"
-        salary = "Unknown"
+        # Отримуємо опис
+        description_elem = job_link.find('p')
+        description = description_elem.text.strip() if description_elem else "Unknown"
+        
+        # Отримуємо назву компанії
+        company_elem = job_link.find('li', class_='text-indent no-style mt-sm mb-0')
+        company = company_elem.find('a', class_='inline-block mb-xs').text.strip() if company_elem and company_elem.find('a') else "Unknown"
+        
+        # Отримуємо місце розташування
+        location_elem = job_link.find('span', class_='glyphicon glyphicon-map-marker text-default glyphicon-large')
+        location = location_elem.find_next_sibling(text=True).strip() if location_elem else "Unknown"
+        
+        # Отримуємо заробітну плату
+        salary_elem = job_link.find('span', class_='glyphicon glyphicon-hryvnia text-default glyphicon-large')
+        salary = salary_elem.find_next_sibling(text=True).strip() if salary_elem else "Unknown"
         
         resumes.append({
             'title': title,
@@ -20,11 +33,13 @@ def parse_work_ua_resumes(soup):
             'location': location,
             'salary': salary
         })
+    
     return resumes
 
 def parse_robota_ua_resumes(soup):
     resumes = []
     job_links = soup.find_all('div', class_='card')
+    
     for job_link in job_links:
         title = job_link.find('a', class_='ga_listing').text.strip() if job_link.find('a', class_='ga_listing') else "Unknown"
         company = job_link.find('div', class_='job-list-company-title').text.strip() if job_link.find('div', class_='job-list-company-title') else "Unknown"
@@ -39,6 +54,7 @@ def parse_robota_ua_resumes(soup):
             'location': location,
             'salary': salary
         })
+    
     return resumes
 
 def fetch_resumes(job_position, years_of_experience, skills, location, salary_expectation):
